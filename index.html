@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 增加 viewport-fit=cover 以支持刘海屏/灵动岛安全区适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>⚡ 2026 届毕业季 · 赛博拍立得纪念舱</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,87 +11,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Sync & Modern -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;700;950&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
-    <!-- html2canvas and jsPDF for high fidelity document compilation -->
+    <!-- html2canvas and jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- 🚀 Supabase 官方云端 SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
+        /* 移除 body 的 flex 强制居中，避免手机端内容溢出导致不可点击 */
         body {
             font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
-            background: #04050a;
+            background-color: #04050a;
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
                 radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.12) 0%, transparent 45%),
                 radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
             -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            color: #e2e8f0;
         }
 
-        /* ------------------ 双端自适应外壳物理结构 ------------------ */
-        @media (max-width: 767px) {
-            .h5-container {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                height: 100vh !important;
-                min-height: 100vh !important;
-                border: none !important;
-                border-radius: 0 !important;
-            }
-            .phone-frame {
-                border: none !important;
-                box-shadow: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                border-radius: 0 !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .bg-grid-pattern {
-                background-size: 40px 40px;
-                background-image: 
-                    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            }
-            .phone-frame {
-                width: 385px;
-                height: 800px;
-                border: 10px solid #1e293b;
-                border-radius: 46px;
-                background: #000;
-                box-shadow: 
-                    0 0 0 2px rgba(255, 255, 255, 0.05),
-                    0 25px 80px -10px rgba(0, 0, 0, 0.8),
-                    0 0 40px rgba(99, 102, 241, 0.15);
-                position: relative;
-                overflow: hidden;
-            }
-            .phone-frame::before {
-                content: '';
-                position: absolute;
-                top: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100px;
-                height: 24px;
-                background: #000;
-                border-radius: 12px;
-                z-index: 999;
-                pointer-events: none;
-            }
-            .h5-container {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: 100% !important;
-                min-height: 100% !important;
-            }
-        }
-
-        /* ------------------ H5 内部质感样式 ------------------ */
         .h5-container {
+            width: 100%;
             max-width: 480px;
             min-height: 100vh;
             margin: 0 auto;
@@ -99,7 +42,10 @@
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
             border-left: 1px solid rgba(255, 255, 255, 0.03);
             border-right: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
         }
+
         .cyber-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.07);
@@ -120,13 +66,6 @@
         .cursive-hand {
             font-family: 'Zhi Mang Xing', cursive, sans-serif;
             font-size: 1.25rem;
-        }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-        .glowing-lock {
-            animation: pulse-glow 2s infinite ease-in-out;
         }
         .wave-bar {
             animation: wave-bounce 1.2s ease-in-out infinite alternate;
@@ -227,208 +166,267 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-200 antialiased flex items-center justify-center">
+<body class="antialiased">
 
-    <!-- ------------------ 桌面级 3D 全息封装外壳 (纯净居中版) ------------------ -->
-    <div class="min-h-screen w-full flex items-center justify-center p-4 md:p-8 lg:p-12 bg-grid-pattern relative overflow-hidden">
+    <!-- H5 核心容器 -->
+    <div class="h5-container">
         
-        <div class="hidden md:block absolute -left-40 top-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="hidden md:block absolute -right-40 bottom-20 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-        <!-- 📱 中间：iPhone 真机容器 -->
-        <div class="phone-frame">
-            
-            <div class="h5-container w-full flex flex-col justify-between overflow-hidden">
-                
-                <header class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-[#0d0f1a]/90 backdrop-blur-md sticky top-0 z-40">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-400 to-indigo-600 flex items-center justify-center text-sm shadow-lg shadow-teal-500/10">
-                            ⚡
-                        </div>
-                        <div>
-                            <h1 class="text-sm font-black text-white tracking-wider" id="header-class-name">赛博拍立得舱</h1>
-                            <p class="text-[10px] text-teal-400 font-bold uppercase tracking-widest">Graduation 2026</p>
-                        </div>
-                    </div>
-                    <button onclick="copyShareLink()" class="text-[10px] bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-extrabold px-3.5 py-2 rounded-xl border border-white/10 flex items-center gap-1.5 transition-all active:scale-95">
-                        <i class="fa-solid fa-share-nodes text-teal-400"></i> 呼唤死党
-                    </button>
-                </header>
-
-                <main class="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-
-                    <!-- 页面1：创建班级舱 -->
-                    <div id="view-welcome" class="space-y-6 py-4 animate-fade-in">
-                        <div class="text-center space-y-4">
-                            <span class="inline-block bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[10px] font-black px-4 py-1.5 rounded-full tracking-widest uppercase">
-                                🎓 2026高考季·青春无悔
-                            </span>
-                            <h2 class="text-3xl font-black text-white tracking-tight leading-tight">
-                                拒绝大俗告别！<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-pink-500">赛博拍立得照片墙</span>
-                            </h2>
-                            <p class="text-xs text-slate-400 max-w-[320px] mx-auto leading-relaxed font-medium">
-                                全班一人一卡，自拍与MBTI卡片智能组装。免费生成朋友圈长图带起裂变，付费可直接下载高清拼版PDF送去淘宝冲印实体书。
-                            </p>
-                        </div>
-
-                        <div class="cyber-card p-6 space-y-4">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block uppercase">班级代码/名称</label>
-                                <input type="text" id="input-class-name" placeholder="例如：高三 (8) 班" class="w-full bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold placeholder:text-slate-600 transition-colors">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block uppercase">班长/创建人尊姓大名</label>
-                                <input type="text" id="input-creator-name" placeholder="例如：阿亮班长" class="w-full bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold placeholder:text-slate-600 transition-colors">
-                            </div>
-                        </div>
-
-                        <button onclick="createClassH5()" class="w-full bg-gradient-to-r from-teal-400 to-indigo-500 text-white font-black text-xs py-4 rounded-2xl shadow-lg shadow-teal-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 tracking-widest">
-                            🚀 免费开启我们的班级墙 <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-
-                    <!-- 页面2：拍立得照片墙主视图 -->
-                    <div id="view-wall" class="hidden space-y-5 animate-fade-in">
-                        <div class="cyber-card p-6 relative overflow-hidden">
-                            <div class="absolute -right-12 -top-12 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl"></div>
-                            <div class="absolute -left-12 -bottom-12 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl"></div>
-                            
-                            <div class="flex justify-between items-start relative z-10">
-                                <div>
-                                    <span class="text-[9px] text-teal-400 font-extrabold tracking-wider block uppercase" id="wall-creator-label">班长 建立</span>
-                                    <div class="flex items-center gap-2 mt-0.5">
-                                        <h3 class="text-xl font-black text-white" id="wall-title-label">高三8班 · 毕业集结令</h3>
-                                        <button onclick="openEditClassModal()" class="text-teal-400 hover:text-teal-300 text-xs transition-colors p-1" title="修改班级信息">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] bg-teal-500/10 text-teal-400 px-3 py-1 rounded-xl font-extrabold border border-teal-500/20" id="classmate-count">0 人入册</span>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-3 leading-relaxed font-medium">
-                                每位同学将自己的大头照拼贴于此。点击任何一张照片都可触发青春BGM，感受专属的赛博毕业仪式。
-                            </p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-5 pb-24" id="wall-cards-container">
-                            <!-- 动态插入 -->
-                        </div>
-                    </div>
-
-                    <!-- 页面3：填写/修改我的卡片 -->
-                    <div id="view-edit" class="hidden space-y-4 animate-fade-in pb-16">
-                        <div class="flex justify-between items-center pb-2 border-b border-white/5">
-                            <span class="text-xs font-black text-white flex items-center gap-2">
-                                <i class="fa-solid fa-camera-retro text-teal-400"></i> 创建我的专属拍立得人设卡
-                            </span>
-                            <button onclick="switchH5View('wall')" class="text-slate-400 hover:text-slate-200 text-xs py-1 px-2.5 bg-white/5 rounded-xl">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-
-                        <div class="cyber-card p-5 space-y-4">
-                            <div class="space-y-2 text-center">
-                                <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block text-left uppercase">我的大头自拍/照片</label>
-                                <div onclick="triggerH5PhotoSelect()" class="w-full aspect-square bg-slate-900/80 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-teal-400 transition-all relative overflow-hidden group">
-                                    <img id="h5-avatar-preview" class="w-full h-full object-cover hidden">
-                                    <div id="h5-upload-placeholder" class="text-center space-y-2 p-4">
-                                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500 group-hover:text-teal-400 transition-colors"></i>
-                                        <p class="text-xs font-bold text-slate-400">上传我的自拍照片</p>
-                                        <p class="text-[9px] text-slate-600 leading-relaxed">支持 JPEG、PNG格式，3MB以内</p>
-                                    </div>
-                                </div>
-                                <input type="file" id="h5-file-input" accept="image/*" class="hidden" onchange="handleH5PhotoSelect(event)">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1.5">
-                                    <label class="text-[9px] font-black text-slate-400 uppercase">真实大名</label>
-                                    <input type="text" id="form-name" placeholder="姓名" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
-                                </div>
-                                <div class="space-y-1.5">
-                                    <label class="text-[9px] font-black text-slate-400 uppercase">MBTI 人格</label>
-                                    <select id="form-mbti" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold appearance-none">
-                                        <option value="ENFP">ENFP (快乐小狗)</option>
-                                        <option value="INFJ">INFJ (精神灯塔)</option>
-                                        <option value="INTP">INTP (逻辑怪杰)</option>
-                                        <option value="INTJ">INTJ (幕后主脑)</option>
-                                        <option value="ENTP">ENTP (杠精辩手)</option>
-                                        <option value="ENFJ">ENFJ (社群领袖)</option>
-                                        <option value="INFP">INFP (治愈诗歌)</option>
-                                        <option value="ENTJ">ENTJ (霸道总裁)</option>
-                                        <option value="ISTP">ISTP (硬核独行)</option>
-                                        <option value="ISFP">ISFP (优雅画家)</option>
-                                        <option value="ESTP">ESTP (狂野老司机)</option>
-                                        <option value="ESFP">ESFP (气氛制造)</option>
-                                        <option value="ISTJ">ISTJ (铁血纪律)</option>
-                                        <option value="ISFJ">ISFJ (贴心管家)</option>
-                                        <option value="ESTJ">ESTJ (硬核教官)</option>
-                                        <option value="ESFJ">ESFJ (社交甜心)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="space-y-1.5">
-                                <label class="text-[9px] font-black text-slate-400 uppercase">高中专属绰号/人设标签</label>
-                                <input type="text" id="form-nickname" placeholder="例如：高三8班做题家、不解风情代码人" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
-                            </div>
-
-                            <div class="space-y-1.5">
-                                <label class="text-[9px] font-black text-slate-400 uppercase">青春专属 BGM (歌名)</label>
-                                <input type="text" id="form-song" placeholder="例如：五月天 - 《干杯》" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
-                            </div>
-
-                            <div class="space-y-1.5">
-                                <label class="text-[9px] font-black text-slate-400 uppercase">毕业宣言/想对大家说的话 (限100字)</label>
-                                <textarea id="form-desc" rows="3" maxlength="100" placeholder="高考完不留遗憾！想说的话写在这里..." class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold resize-none"></textarea>
-                            </div>
-                        </div>
-
-                        <button onclick="saveH5Card()" class="w-full bg-gradient-to-r from-teal-400 to-indigo-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all">
-                            <span id="btn-save-card-text">📸 挂上我的拍立得卡片！</span>
-                        </button>
-                    </div>
-
-                </main>
-
-                <!-- 底部浮动导航栏 -->
-                <footer id="footer-actions" class="hidden px-5 py-3.5 bg-[#090b14]/95 border-t border-white/5 flex flex-col gap-2.5 sticky bottom-0 z-40 backdrop-blur-md">
-                    <button onclick="showH5EditView()" class="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-white font-black text-[11px] py-3 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">
-                        <i class="fa-solid fa-camera text-teal-400"></i> 我也要上墙自拍
-                    </button>
-                    <div class="flex gap-3">
-                        <button onclick="generateLongImage()" class="flex-1 bg-[#1e293b] hover:bg-slate-800 border border-slate-700 text-teal-400 font-bold text-[10px] py-3 rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                            <i class="fa-solid fa-image"></i> 🎨 生成朋友圈长图 (免费)
-                        </button>
-                        <button onclick="triggerPayExportH5()" class="flex-1 bg-gradient-to-r from-emerald-400 to-teal-500 hover:opacity-90 text-white font-black text-[10px] py-3 rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-lg shadow-teal-500/10">
-                            <i class="fa-solid fa-file-pdf"></i> 🎓 导出 A4 画册 (8.8元 祝顺利)
-                        </button>
-                    </div>
-                </footer>
+        <!-- 💡 顶部灵动岛安全区适配 -->
+        <header class="px-5 pb-4 pt-[max(1rem,env(safe-area-inset-top))] border-b border-white/5 flex justify-between items-center bg-[#0d0f1a]/90 backdrop-blur-md sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-400 to-indigo-600 flex items-center justify-center text-sm shadow-lg shadow-teal-500/10">
+                    ⚡
+                </div>
+                <div>
+                    <h1 class="text-sm font-black text-white tracking-wider" id="header-class-name">赛博拍立得舱</h1>
+                    <p class="text-[10px] text-teal-400 font-bold uppercase tracking-widest">Graduation 2026</p>
+                </div>
             </div>
-        </div>
+            <!-- 呼唤死党 -->
+            <button onclick="copyShareLink()" class="text-[10px] bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-extrabold px-3.5 py-2 rounded-xl border border-white/10 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-share-nodes text-teal-400"></i> 呼唤死党
+            </button>
+        </header>
+
+        <!-- 主内容区域 -->
+        <main class="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-40"> <!-- 增加底部内边距防止被浮动栏遮挡 -->
+
+            <!-- 页面1：创建班级舱 -->
+            <div id="view-welcome" class="space-y-6 py-4 animate-fade-in">
+                <div class="text-center space-y-4">
+                    <span class="inline-block bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[10px] font-black px-4 py-1.5 rounded-full tracking-widest uppercase">
+                        🎓 2026高考季·青春无悔
+                    </span>
+                    <h2 class="text-3xl font-black text-white tracking-tight leading-tight">
+                        拒绝大俗告别！<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-pink-500">赛博拍立得照片墙</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 max-w-[320px] mx-auto leading-relaxed font-medium">
+                        全班一人一卡，自拍与MBTI卡片智能组装。免费生成朋友圈长图带起裂变，付费可直接下载高清拼版PDF送去淘宝冲印实体书。
+                    </p>
+                </div>
+
+                <!-- 极具科技感的输入表单 -->
+                <div class="cyber-card p-6 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block uppercase">班级代码/名称</label>
+                        <input type="text" id="input-class-name" placeholder="例如：高三 (8) 班" class="w-full bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold placeholder:text-slate-600 transition-colors">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block uppercase">班长/创建人尊姓大名</label>
+                        <input type="text" id="input-creator-name" placeholder="例如：阿亮班长" class="w-full bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold placeholder:text-slate-600 transition-colors">
+                    </div>
+                </div>
+
+                <button onclick="createClassH5()" class="w-full bg-gradient-to-r from-teal-400 to-indigo-500 text-white font-black text-xs py-4 rounded-2xl shadow-lg shadow-teal-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 tracking-widest cursor-pointer">
+                    🚀 免费开启我们的班级墙 <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- 页面2：拍立得照片墙主视图 -->
+            <div id="view-wall" class="hidden space-y-5 animate-fade-in">
+                <!-- 班级看板 -->
+                <div class="cyber-card p-6 relative overflow-hidden">
+                    <div class="absolute -right-12 -top-12 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -left-12 -bottom-12 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl"></div>
+                    
+                    <div class="flex justify-between items-start relative z-10">
+                        <div>
+                            <span class="text-[9px] text-teal-400 font-extrabold tracking-wider block uppercase" id="wall-creator-label">班长 建立</span>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <h3 class="text-xl font-black text-white" id="wall-title-label">高三8班 · 毕业集结令</h3>
+                                <button onclick="openEditClassModal()" class="text-teal-400 hover:text-teal-300 text-xs transition-colors p-1 cursor-pointer" title="修改班级信息">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-teal-500/10 text-teal-400 px-3 py-1 rounded-xl font-extrabold border border-teal-500/20" id="classmate-count">0 人入册</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 leading-relaxed font-medium">
+                        每位同学将自己的大头照拼贴于此。点击任何一张照片都可进行修改或撕毁。
+                    </p>
+                </div>
+
+                <!-- 拍立得照片网格 -->
+                <div class="grid grid-cols-2 gap-5" id="wall-cards-container">
+                    <!-- 动态插入 -->
+                </div>
+            </div>
+
+            <!-- 页面3：填写/修改我的卡片 -->
+            <div id="view-edit" class="hidden space-y-4 animate-fade-in">
+                <div class="flex justify-between items-center pb-2 border-b border-white/5">
+                    <span class="text-xs font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-camera-retro text-teal-400"></i> 创建/修改专属人设卡
+                    </span>
+                    <button onclick="switchH5View('wall')" class="text-slate-400 hover:text-slate-200 text-xs py-1 px-2.5 bg-white/5 rounded-xl cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- 卡片配置表单 -->
+                <div class="cyber-card p-5 space-y-4">
+                    <div class="space-y-2 text-center">
+                        <label class="text-[10px] font-extrabold text-teal-400 tracking-wider block text-left uppercase">我的大头自拍/照片</label>
+                        <div onclick="triggerH5PhotoSelect()" class="w-full aspect-square bg-slate-900/80 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-teal-400 transition-all relative overflow-hidden group">
+                            <img id="h5-avatar-preview" class="w-full h-full object-cover hidden">
+                            <div id="h5-upload-placeholder" class="text-center space-y-2 p-4">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500 group-hover:text-teal-400 transition-colors"></i>
+                                <p class="text-xs font-bold text-slate-400">上传我的自拍照片</p>
+                                <p class="text-[9px] text-slate-600 leading-relaxed">支持 JPEG、PNG格式，3MB以内</p>
+                            </div>
+                        </div>
+                        <input type="file" id="h5-file-input" accept="image/*" class="hidden" onchange="handleH5PhotoSelect(event)">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-slate-400 uppercase">真实大名</label>
+                            <input type="text" id="form-name" placeholder="姓名" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-slate-400 uppercase">MBTI 人格</label>
+                            <select id="form-mbti" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold appearance-none">
+                                <option value="ENFP">ENFP (快乐小狗)</option>
+                                <option value="INFJ">INFJ (精神灯塔)</option>
+                                <option value="INTP">INTP (逻辑怪杰)</option>
+                                <option value="INTJ">INTJ (幕后主脑)</option>
+                                <option value="ENTP">ENTP (杠精辩手)</option>
+                                <option value="ENFJ">ENFJ (社群领袖)</option>
+                                <option value="INFP">INFP (治愈诗歌)</option>
+                                <option value="ENTJ">ENTJ (霸道总裁)</option>
+                                <option value="ISTP">ISTP (硬核独行)</option>
+                                <option value="ISFP">ISFP (优雅画家)</option>
+                                <option value="ESTP">ESTP (狂野老司机)</option>
+                                <option value="ESFP">ESFP (气氛制造)</option>
+                                <option value="ISTJ">ISTJ (铁血纪律)</option>
+                                <option value="ISFJ">ISFJ (贴心管家)</option>
+                                <option value="ESTJ">ESTJ (硬核教官)</option>
+                                <option value="ESFJ">ESFJ (社交甜心)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-slate-400 uppercase">高中专属绰号/人设标签</label>
+                        <input type="text" id="form-nickname" placeholder="例如：高三8班做题家" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-slate-400 uppercase">青春专属 BGM (歌名)</label>
+                        <input type="text" id="form-song" placeholder="例如：五月天 - 《干杯》" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-slate-400 uppercase">毕业宣言/想对大家说的话</label>
+                        <textarea id="form-desc" rows="3" maxlength="100" placeholder="高考完不留遗憾！想说的话写在这里..." class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold resize-none"></textarea>
+                    </div>
+                </div>
+
+                <button onclick="saveH5Card()" class="w-full bg-gradient-to-r from-teal-400 to-indigo-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">
+                    <span id="btn-save-card-text">📸 挂上我的拍立得卡片！</span>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- 💡 底部浮动导航栏：采用绝对吸底（Fixed），杜绝点击穿透和移位 -->
+        <footer id="footer-actions" class="hidden px-5 pt-3.5 pb-[max(1rem,env(safe-area-inset-bottom))] bg-[#090b14]/95 border-t border-white/5 flex flex-col gap-2.5 fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-50 backdrop-blur-md">
+            <button onclick="showH5EditView()" class="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-white font-black text-[11px] py-3 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md">
+                <i class="fa-solid fa-camera text-teal-400"></i> 我也要上墙自拍
+            </button>
+            <div class="flex gap-3">
+                <button onclick="generateLongImage()" class="flex-1 bg-[#1e293b] hover:bg-slate-800 border border-slate-700 text-teal-400 font-bold text-[10px] py-3 rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-md">
+                    <i class="fa-solid fa-image"></i> 🎨 生成朋友圈长图
+                </button>
+                <button onclick="triggerPayExportH5()" class="flex-1 bg-gradient-to-r from-emerald-400 to-teal-500 hover:opacity-90 text-white font-black text-[10px] py-3 rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-lg shadow-teal-500/10 cursor-pointer">
+                    <i class="fa-solid fa-file-pdf"></i> 🎓 导出无水印画册
+                </button>
+            </div>
+        </footer>
+
     </div>
 
-    <!-- 其余弹窗模块 (收银台、长图展示等) -->
-    <!-- 收银台 -->
+    <!-- 其余弹窗模块保持原样 -->
     <div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md p-4">
-        <!-- ... 省略长代码结构，功能一致 ... -->
         <div class="bg-slate-950 border border-white/10 w-full max-w-[420px] rounded-t-[36px] sm:rounded-[36px] p-6 space-y-6 animate-slide-up text-left relative">
             <div class="flex justify-between items-center border-b border-white/5 pb-4">
                 <span class="text-xs font-black text-white flex items-center gap-2">
                     <i class="fa-brands fa-weixin text-[#07c160] text-lg"></i> 微信支付安全中心
                 </span>
-                <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-200 text-sm bg-white/5 w-7 h-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-200 text-sm bg-white/5 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <div class="text-center space-y-3 py-2">
+                <span class="text-[10px] text-teal-300 tracking-wider font-extrabold uppercase bg-teal-500/10 px-4 py-1.5 rounded-full inline-block">🌸 2026届 · 班级毕业青春不散场</span>
                 <h3 class="text-3xl font-black text-white tracking-tight">￥8.80</h3>
                 <span class="text-[10px] text-teal-400 block font-bold">💡 寓意：“此去繁花似锦，岁岁常安”</span>
             </div>
-
-            <button onclick="confirmH5MockPayment()" class="w-full bg-[#07c160] hover:bg-[#06ad56] text-white font-black text-xs py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-[#07c160]/10">
+            <button onclick="confirmH5MockPayment()" class="w-full bg-[#07c160] hover:bg-[#06ad56] text-white font-black text-xs py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-[#07c160]/10 cursor-pointer">
                 <i class="fa-solid fa-heart"></i> 解锁全班永久回忆 (8.8元)
             </button>
+        </div>
+    </div>
+
+    <!-- 朋友圈长图遮罩展示 -->
+    <div id="long-image-modal" class="hidden fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black/95 p-4 overflow-y-auto">
+        <div class="w-full max-w-[360px] flex flex-col items-center gap-3 py-6 relative z-[1000]">
+            <div class="flex justify-between w-full text-slate-300 text-xs px-2">
+                <span class="font-bold text-teal-400"><i class="fa-solid fa-circle-down"></i> 专属长图已生成！</span>
+                <button onclick="closeLongImageModal()" class="text-slate-400 hover:text-white bg-white/10 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                📸 请 <strong class="text-teal-300">【长按下方图片】</strong> 弹出微信菜单选择 <strong class="text-teal-300">【保存到相册】</strong>！
+            </p>
+            <div class="border border-white/10 rounded-2xl overflow-hidden shadow-2xl bg-slate-900 max-h-[65vh] overflow-y-auto w-full">
+                <img id="generated-long-img" class="w-full h-auto object-contain block select-all">
+            </div>
+        </div>
+    </div>
+
+    <!-- 班级信息修改模态弹窗 -->
+    <div id="class-edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+        <div class="bg-slate-950 border border-white/10 w-full max-w-[360px] rounded-[28px] p-6 space-y-4 animate-slide-up text-left relative">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <span class="text-xs font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-teal-400"></i> 修改班级舱信息
+                </span>
+                <button onclick="closeEditClassModal()" class="text-slate-400 hover:text-slate-200 text-sm bg-white/5 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-slate-400 uppercase">班级代码/名称</label>
+                    <input type="text" id="edit-class-name" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-slate-400 uppercase">创建人/班长姓名</label>
+                    <input type="text" id="edit-creator-name" class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold">
+                </div>
+            </div>
+            <button onclick="saveClassInfo()" class="w-full bg-gradient-to-r from-teal-400 to-indigo-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer">
+                确认修改
+            </button>
+        </div>
+    </div>
+
+    <!-- 确认删除卡片模态弹窗 -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+        <div class="bg-slate-950 border border-white/10 w-full max-w-[320px] rounded-[28px] p-6 space-y-4 text-center relative animate-slide-up z-[1000]">
+            <div class="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center mx-auto text-rose-500 text-lg">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div class="space-y-1.5">
+                <h4 class="text-xs font-black text-white">确定要撕掉该卡片吗？</h4>
+                <p class="text-[9px] text-slate-400 leading-relaxed">此操作不可恢复，该同学留下的回忆将会被永久从云端移除。</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeDeleteConfirmModal()" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold text-[11px] py-2.5 rounded-xl transition-all cursor-pointer">
+                    返回
+                </button>
+                <button id="btn-confirm-delete-action" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-[11px] py-2.5 rounded-xl transition-all cursor-pointer">
+                    确认删除
+                </button>
+            </div>
         </div>
     </div>
 
@@ -443,6 +441,7 @@
         const SUPABASE_URL = "https://ltxbsrgigjdoynmwwjac.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_4eFaEHWPJItrx6qjM5cyTw_toBvQcUl";
         
+        // 使用 supabaseClient 防止变量冲突报错
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let h5ClassData = {
@@ -455,11 +454,30 @@
         let editingIndex = -1; 
         let cardToDeleteIndex = -1; 
 
+        // 默认冷启动样板数据
+        const initMockData = [
+            {
+                name: "阿亮班长",
+                mbti: "ENFP",
+                nickname: "高三8班做题家",
+                photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+                desc: "凡是过往，皆为序章。干了这杯，去清华北大学代码吧！大家加油！",
+                song: "五月天 - 《干杯》"
+            },
+            {
+                name: "小美",
+                mbti: "INFJ",
+                nickname: "文艺社社长",
+                photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+                desc: "愿我们在彼此看不到的岁月里熠熠生辉。青山不改，绿水长流！",
+                song: "周杰伦 - 《晴天》"
+            }
+        ];
+
         window.onload = function() {
-            // 🚨 检查密钥是否被替换
             if (SUPABASE_ANON_KEY.includes("替换成你在")) {
                 setTimeout(() => {
-                    alert("⚠️ 警告：检测到你尚未在代码第 386 行填入 Supabase 密钥 (Anon key)，这将导致无法将数据保存到云端！");
+                    alert("⚠️ 警告：检测到你尚未在代码第 430 行填入 Supabase 密钥 (Anon key)，这将导致无法将数据保存到云端！");
                 }, 1000);
             }
 
@@ -487,6 +505,8 @@
             }
             if (viewId === 'wall') {
                 document.getElementById('footer-actions').classList.remove('hidden');
+                // 确保页面滚动到顶部
+                window.scrollTo(0, 0);
             }
         }
 
@@ -497,7 +517,10 @@
                 .eq('class_id', classId)
                 .order('created_at', { ascending: false });
 
-            if (error) return null;
+            if (error) {
+                console.error("云端加载失败:", error);
+                return null;
+            }
 
             return data.map(item => ({
                 id: item.id,
@@ -561,6 +584,19 @@
                 showH5Notification(`📁 已为您无缝同步云端数据！`);
             } else {
                 h5ClassData.classmates = [];
+                for (const mock of initMockData) {
+                    await supabaseClient.from('classmates').insert([{
+                        class_id: classInput,
+                        name: mock.name,
+                        mbti: mock.mbti,
+                        nickname: mock.nickname,
+                        song: mock.song,
+                        desc_text: mock.desc,
+                        photo_url: mock.photo
+                    }]);
+                }
+                const freshClassmates = await loadClassmatesFromCloud(classInput);
+                h5ClassData.classmates = freshClassmates || [];
                 showH5Notification("✨ 全新班级云端舱门成功开启！");
             }
 
@@ -604,6 +640,7 @@
                 const card = document.createElement('div');
                 card.className = "polaroid-item p-3 cursor-pointer select-none";
                 card.style.transform = `rotate(${randomRotate}deg)`;
+                card.onclick = () => showCardDetails(item, index);
                 
                 card.innerHTML = `
                     <div class="w-full aspect-square overflow-hidden bg-slate-900 relative rounded-[2px]">
@@ -615,12 +652,60 @@
                     <div class="mt-3.5 text-slate-900 text-left">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-black tracking-tight">${item.name}</h4>
+                            <i class="fa-solid fa-compact-disc text-slate-400 text-[10px] animate-spin" style="animation-duration: 4s;"></i>
                         </div>
                         <p class="text-[9px] text-slate-500 font-bold truncate mt-1"># ${item.nickname}</p>
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function showCardDetails(item, index) {
+            const detailModal = document.createElement('div');
+            detailModal.className = "fixed inset-0 z-[900] flex items-center justify-center bg-black/90 backdrop-blur-md p-5 animate-fade-in";
+            detailModal.innerHTML = `
+                <div class="bg-slate-950 border border-white/10 p-5 pb-6 rounded-[32px] w-full max-w-[340px] text-slate-200 space-y-4 shadow-2xl relative animate-slide-up z-[901]">
+                    <button class="absolute right-4 top-4 text-slate-400 hover:text-white text-md w-8 h-8 rounded-full bg-white/5 flex items-center justify-center cursor-pointer" onclick="this.closest('.fixed').remove()"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <div class="w-full aspect-square overflow-hidden rounded-2xl bg-slate-900 relative">
+                        <img src="${item.photo}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 right-3 text-[9px] bg-slate-950 text-teal-400 border border-teal-500/20 font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
+                            ${item.mbti}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-white/[0.01] px-4 py-2.5 rounded-2xl border border-white/5">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-compact-disc text-teal-400 text-lg animate-spin" style="animation-duration: 3s;"></i>
+                            <div class="text-left">
+                                <span class="text-[8px] text-slate-500 block uppercase font-bold tracking-widest">代表我们高中的BGM</span>
+                                <span class="text-[11px] font-black text-white">${item.song}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-left space-y-1.5">
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-base font-black text-white">${item.name}</h3>
+                            <span class="text-[9px] bg-white/5 text-slate-400 font-extrabold px-2 py-0.5 rounded-md"># ${item.nickname}</span>
+                        </div>
+                        <div class="text-xs text-slate-300 bg-white/[0.01] border border-white/5 p-3 rounded-xl cursive-hand leading-relaxed">
+                            "${item.desc}"
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="editClassmateCard(${index}); this.closest('.fixed').remove();" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold text-[10px] py-3 rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-pen-to-square text-teal-400"></i> 编辑卡片
+                        </button>
+                        <button onclick="deleteClassmateCard(${index}); this.closest('.fixed').remove();" class="flex-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 font-extrabold text-[10px] py-3 rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-trash-can"></i> 移除卡片
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(detailModal);
         }
 
         let uploadedPhotoBase64 = "";
@@ -632,6 +717,11 @@
         function handleH5PhotoSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
+
+            if (file.size > 3 * 1024 * 1024) {
+                showH5Notification("⚠️ 照片太大啦，请换个小图试一试！");
+                return;
+            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -652,6 +742,33 @@
             document.getElementById('h5-avatar-preview').classList.add('hidden');
             document.getElementById('h5-upload-placeholder').classList.remove('hidden');
             uploadedPhotoBase64 = "";
+            
+            document.getElementById('btn-save-card-text').textContent = "📸 挂上我的拍立得卡片！";
+            switchH5View('edit');
+        }
+
+        function editClassmateCard(index) {
+            editingIndex = index;
+            const item = h5ClassData.classmates[index];
+
+            document.getElementById('form-name').value = item.name;
+            document.getElementById('form-mbti').value = item.mbti;
+            document.getElementById('form-nickname').value = item.nickname;
+            document.getElementById('form-song').value = item.song;
+            document.getElementById('form-desc').value = item.desc;
+
+            if (item.photo) {
+                uploadedPhotoBase64 = item.photo;
+                document.getElementById('h5-avatar-preview').src = item.photo;
+                document.getElementById('h5-avatar-preview').classList.remove('hidden');
+                document.getElementById('h5-upload-placeholder').classList.add('hidden');
+            } else {
+                uploadedPhotoBase64 = "";
+                document.getElementById('h5-avatar-preview').classList.add('hidden');
+                document.getElementById('h5-upload-placeholder').classList.remove('hidden');
+            }
+
+            document.getElementById('btn-save-card-text').textContent = "💾 保存卡片修改";
             switchH5View('edit');
         }
 
@@ -694,16 +811,32 @@
                 photo_url: finalPhotoUrl
             };
 
-            // 🚨 核心拦截监测区 🚨
-            const { error } = await supabaseClient.from('classmates').insert([cardData]);
-            
-            if (error) {
-                alert(`🚨 【数据库写入被云端拦截】\n\n错误信息：${error.message}\n错误代码：${error.code}\n\n可能是本地浏览器跨域拦截，或者云端权限未开放！`);
-                showH5Notification(`❌ 上传失败，请查看弹窗报错！`, 6000);
-                return;
+            if (editingIndex === -1) {
+                // 新建
+                const { error } = await supabaseClient.from('classmates').insert([cardData]);
+                if (error) {
+                    alert(`🚨 【写入拦截】\n原因：${error.message}`);
+                    showH5Notification(`❌ 上传失败，请查看弹窗报错！`, 6000);
+                    return;
+                }
+                showH5Notification("📸 录入成功！拍立得已实时同步至全班大屏幕！");
+            } else {
+                // 彻底修复二次编辑云端同步！
+                const targetCard = h5ClassData.classmates[editingIndex];
+                if (targetCard.id) {
+                    const { error } = await supabaseClient
+                        .from('classmates')
+                        .update(cardData)
+                        .eq('id', targetCard.id);
+                        
+                    if (error) {
+                        alert(`🚨 【更新拦截】\n原因：${error.message}`);
+                        return;
+                    }
+                    showH5Notification("💾 云端卡片修改并成功同步！");
+                }
+                editingIndex = -1; 
             }
-
-            showH5Notification("📸 录入成功！拍立得已实时同步至全班大屏幕！");
 
             saveH5DataToStorage();
             await initH5Classroom();
@@ -714,6 +847,41 @@
             uploadedPhotoBase64 = "";
         }
 
+        function deleteClassmateCard(index) {
+            cardToDeleteIndex = index;
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            cardToDeleteIndex = -1;
+        }
+
+        // 云端物理撕卡
+        async function executeCardDeletion() {
+            if (cardToDeleteIndex !== -1) {
+                const targetCard = h5ClassData.classmates[cardToDeleteIndex];
+                showH5Notification("🗑️ 正在从云端太空舱回收卡片...", 5000);
+                
+                if (targetCard && targetCard.id) {
+                    const { error } = await supabaseClient
+                        .from('classmates')
+                        .delete()
+                        .eq('id', targetCard.id);
+
+                    if (error) {
+                        showH5Notification("❌ 从云端撕除卡片失败，请重试！");
+                        console.error(error);
+                        return;
+                    }
+                }
+                
+                showH5Notification("🗑️ 成功从全班云端照片墙撕除卡片！");
+                await initH5Classroom();
+            }
+            closeDeleteConfirmModal();
+        }
+
         function saveH5DataToStorage() {
             const localMeta = {
                 className: h5ClassData.className,
@@ -721,6 +889,292 @@
                 isPaid: h5ClassData.isPaid
             };
             localStorage.setItem('cyber_classmates_v1', JSON.stringify(localMeta));
+        }
+
+        // 打开信息修改弹窗
+        function openEditClassModal() {
+            document.getElementById('edit-class-name').value = h5ClassData.className;
+            document.getElementById('edit-creator-name').value = h5ClassData.creatorName;
+            document.getElementById('class-edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditClassModal() {
+            document.getElementById('class-edit-modal').classList.add('hidden');
+        }
+
+        function saveClassInfo() {
+            const name = document.getElementById('edit-class-name').value.trim();
+            const creator = document.getElementById('edit-creator-name').value.trim();
+            if (!name || !creator) {
+                showH5Notification("⚠️ 班级代码和创建人姓名都不能为空哦！");
+                return;
+            }
+            h5ClassData.className = name;
+            h5ClassData.creatorName = creator;
+            saveH5DataToStorage();
+            initH5Classroom();
+            closeEditClassModal();
+            showH5Notification("🎉 班级舱配置信息修改成功！");
+        }
+
+        function triggerPayExportH5() {
+            if (h5ClassData.isPaid) {
+                executeH5PdfGeneration();
+                return;
+            }
+            const orderId = "PAY" + new Date().getTime().toString() + Math.floor(Math.random() * 1000);
+            document.getElementById('mock-order-id').textContent = orderId;
+            document.getElementById('mock-order-count').textContent = `《${h5ClassData.className}》共 ${h5ClassData.classmates.length} 人拍立得 A4 超清无水印排版源`;
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePayModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        function confirmH5MockPayment() {
+            closePayModal();
+            h5ClassData.isPaid = true;
+            saveH5DataToStorage();
+
+            showH5Notification("💸 微信支付成功！一路顺风，开始为您本地高清拼版...", 4000);
+            triggerConfetti();
+            setTimeout(() => {
+                executeH5PdfGeneration();
+            }, 1500);
+        }
+
+        function triggerConfetti() {
+            for (let i = 0; i < 60; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'fixed';
+                p.style.width = '8px';
+                p.style.height = '8px';
+                p.style.backgroundColor = ['#2dd4bf', '#f43f5e', '#a855f7', '#fbbf24'][Math.floor(Math.random() * 4)];
+                p.style.left = '50%';
+                p.style.top = '60%';
+                p.style.zIndex = '9999';
+                p.style.borderRadius = '50%';
+                document.body.appendChild(p);
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 5 + Math.random() * 10;
+                let x = 0; let y = 0; let gravity = 0.3;
+                let vx = Math.cos(angle) * velocity;
+                let vy = Math.sin(angle) * velocity - 8;
+                const anim = setInterval(() => {
+                    x += vx; y += vy; vy += gravity;
+                    p.style.transform = `translate(${x}px, ${y}px)`;
+                    p.style.opacity = parseFloat(p.style.opacity || '1') - 0.02;
+                    if (parseFloat(p.style.opacity) <= 0) {
+                        clearInterval(anim); p.remove();
+                    }
+                }, 16);
+            }
+        }
+
+        async function generateLongImage() {
+            const wallElement = document.getElementById('wall-cards-container');
+            if (h5ClassData.classmates.length === 0) {
+                showH5Notification("⚠️ 当前还没有任何拍立得卡片，快去上第一个吧！");
+                return;
+            }
+
+            showH5Notification("📸 正在绘制带防白嫖水印的社交长图...", 4000);
+
+            const watermark = document.createElement('div');
+            watermark.className = "col-span-2 pt-8 pb-4 text-center border-t border-dashed border-slate-300 flex flex-col items-center justify-center gap-3";
+            watermark.style.backgroundColor = '#fcfbf9'; 
+            watermark.style.color = '#1e293b';
+            watermark.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; justify-content: center; width: 100%;">
+                    <div style="width: 50px; height: 50px; border: 1px solid #cbd5e1; padding: 2px; background: #fff;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}" style="width: 100%; height: 100%;">
+                    </div>
+                    <div style="text-align: left;">
+                        <h5 style="font-size: 11px; font-weight: 900; color: #0f172a; margin: 0;">扫码加入《${h5ClassData.className}》拍立得舱</h5>
+                        <p style="font-size: 8px; color: #64748b; margin: 2px 0 0 0;">一键上传自拍，生成属于我们的青春回忆墙</p>
+                    </div>
+                </div>
+            `;
+
+            const originBackground = wallElement.style.background;
+            const originalPadding = wallElement.style.padding;
+            
+            wallElement.style.background = '#fcfbf9'; 
+            wallElement.style.padding = '20px';
+
+            const polaroidsOnWall = wallElement.querySelectorAll('.polaroid-item');
+            const watermarkNodeList = [];
+            polaroidsOnWall.forEach(item => {
+                const wm = document.createElement('div');
+                wm.className = 'free-watermark-overlay';
+                wm.innerHTML = `<span class="free-watermark-text">体验版·请支持班费解锁</span>`;
+                item.style.position = 'relative'; 
+                item.appendChild(wm);
+                watermarkNodeList.push(wm); 
+            });
+
+            wallElement.appendChild(watermark);
+
+            try {
+                const canvas = await html2canvas(wallElement, {
+                    scale: 2, 
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: "#fcfbf9",
+                    logging: false
+                });
+
+                const base64Img = canvas.toDataURL('image/png');
+                document.getElementById('generated-long-img').src = base64Img;
+                document.getElementById('long-image-modal').classList.remove('hidden');
+                showH5Notification("🎉 体验版带水印长图生成成功！请长按保存！");
+            } catch (error) {
+                console.error("Long image compilation error:", error);
+                showH5Notification("❌ 生成失败，请在更高级浏览器或电脑端重试。");
+            } finally {
+                watermark.remove();
+                watermarkNodeList.forEach(node => node.remove());
+                wallElement.style.background = originBackground;
+                wallElement.style.padding = originalPadding;
+            }
+        }
+
+        function closeLongImageModal() {
+            document.getElementById('long-image-modal').classList.add('hidden');
+        }
+
+        async function executeH5PdfGeneration() {
+            if (!h5ClassData.isPaid) {
+                showH5Notification("⚠️ 检测到您还未解锁，无法完成无水印 PDF 拼版，请先完成支付！");
+                return;
+            }
+
+            const renderCanvas = document.getElementById('pdf-render-canvas');
+            renderCanvas.innerHTML = "";
+
+            const cardsPerPage = 4;
+            const totalClassmates = h5ClassData.classmates.length;
+            const totalPages = Math.ceil(totalClassmates / cardsPerPage);
+
+            for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = "pdf-page-layout";
+                pageDiv.id = `pdf-page-${pageIdx}`;
+                
+                const pageHeader = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; border-b: 1px solid #dcdad0; padding-bottom: 12px; margin-bottom: 25px;">
+                        <div>
+                            <span style="font-size: 16px; font-weight: 950; font-family: sans-serif; letter-spacing: 2px; color: #1e293b; text-transform: uppercase;">🎓 ${h5ClassData.className} · 2026年无水印高清毕业纪念册</span>
+                            <span style="font-size: 9px; color: #0f766e; font-weight: 700; display: block; margin-top: 3px; letter-spacing: 0.5px;">CLASS OF 2026 · PREMIUM PRINTABLE BOOK</span>
+                        </div>
+                        <span style="font-size: 11px; color: #78716c; font-weight: 800; font-family: monospace;">PAGE ${pageIdx + 1} / ${totalPages}</span>
+                    </div>
+                `;
+                
+                const vintageStamp = `
+                    <div class="vintage-seal">
+                        2026 届<br>
+                        毕业留念<br>
+                        ★ MEMORY ★
+                    </div>
+                `;
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = "grid grid-cols-2 gap-x-8 gap-y-10";
+                gridDiv.style.flex = "1";
+                gridDiv.style.alignContent = "center";
+
+                const startIdx = pageIdx * cardsPerPage;
+                const endIdx = Math.min(startIdx + cardsPerPage, totalClassmates);
+
+                for (let cardIdx = startIdx; cardIdx < endIdx; cardIdx++) {
+                    const item = h5ClassData.classmates[cardIdx];
+                    
+                    const tapeColors = [
+                        'rgba(204, 251, 241, 0.7)', 
+                        'rgba(254, 243, 199, 0.7)', 
+                        'rgba(253, 224, 71, 0.5)',  
+                        'rgba(244, 219, 255, 0.7)'  
+                    ];
+                    const chosenTapeColor = tapeColors[cardIdx % tapeColors.length];
+
+                    const cardHtml = `
+                        <div style="position: relative; background: #ffffff; border: 1px solid #e2e1d9; padding: 14px 14px 28px 14px; box-shadow: 0 10px 25px rgba(27,31,35,0.06); border-radius: 2px; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(${(cardIdx % 2 === 0 ? 0.8 : -0.8)}deg);">
+                            <div class="washi-tape-top" style="background: ${chosenTapeColor};"></div>
+                            <div class="washi-tape-side"></div>
+                            <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: #f4f4f0; border: 1px solid #e2e1d9; border-radius: 1px; position: relative;">
+                                <img src="${item.photo}" style="width: 100%; height: 100%; object-fit: cover;">
+                                <span style="position: absolute; top: 10px; right: 10px; font-size: 8px; background: rgba(15, 23, 42, 0.85); color: #2dd4bf; padding: 2px 8px; border-radius: 99px; font-weight: 900; letter-spacing: 1px;">
+                                    ${item.mbti}
+                                </span>
+                            </div>
+                            <div style="margin-top: 15px; text-align: left;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed #e2e1d9; padding-bottom: 6px;">
+                                    <span style="font-size: 14px; font-weight: 950; color: #1e293b;">${item.name}</span>
+                                    <span style="font-size: 9px; color: #64748b; font-weight: 700;"># ${item.nickname}</span>
+                                </div>
+                                <p style="font-family: 'Zhi Mang Xing', cursive, sans-serif; font-size: 19px; color: #0f172a; margin-top: 12px; line-height: 1.35; min-height: 52px; word-break: break-all;">
+                                    “ ${item.desc} ”
+                                </p>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 6px; border-top: 1px solid #f1f1eb;">
+                                    <span style="font-size: 8px; color: #0f766e; font-weight: 800; display: flex; align-items: center; gap: 4px;">
+                                        <i class="fa-solid fa-music"></i> BGM: ${item.song}
+                                    </span>
+                                    <span style="font-size: 7px; color: #cbd5e1; font-family: monospace;">CLASSMATE CARD</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    gridDiv.innerHTML += cardHtml;
+                }
+
+                pageDiv.innerHTML = pageHeader + vintageStamp;
+                pageDiv.appendChild(gridDiv);
+                
+                const pageFooter = `
+                    <div style="text-align: center; font-size: 10px; color: #78716c; margin-top: 25px; border-top: 1px solid #dcdad0; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 700;">PRODUCED BY 赛博拍立得纪念舱</span>
+                    </div>
+                `;
+                pageDiv.innerHTML += pageFooter;
+                renderCanvas.appendChild(pageDiv);
+            }
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'px', [794, 1123]);
+                for (let i = 0; i < totalPages; i++) {
+                    const pageElement = document.getElementById(`pdf-page-${i}`);
+                    const canvas = await html2canvas(pageElement, {
+                        scale: 2.5, 
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: "#fbfaf7",
+                        logging: false
+                    });
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    if (i > 0) { pdf.addPage(); }
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+                }
+                pdf.save(`${h5ClassData.className}-2026届拍立得青春纪念册(无水印版).pdf`);
+                showH5Notification("🎉 恭喜！8.8元好运解锁成功，无水印 A4 实体冲印级画册 PDF 已成功下载！");
+            } catch (error) {
+                console.error("PDF compiling error:", error);
+                showH5Notification("❌ 拼版失败，请尝试在电脑端或更高版本微信中进行导出。");
+            } finally {
+                renderCanvas.innerHTML = ""; 
+            }
+        }
+
+        function copyShareLink() {
+            const temp = document.createElement('input');
+            temp.value = window.location.href;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showH5Notification("📋 班级链接已复制！直接分享到微信群，叫大家一起来上墙自拍吧！");
         }
 
         function showH5Notification(text, duration = 3000) {
