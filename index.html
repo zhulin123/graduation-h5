@@ -950,10 +950,17 @@
                 executeH5PdfGeneration();
                 return;
             }
-            const orderId = "PAY" + new Date().getTime().toString() + Math.floor(Math.random() * 1000);
-            document.getElementById('mock-order-id').textContent = orderId;
-            document.getElementById('mock-order-count').textContent = `《${h5ClassData.className}》共 ${h5ClassData.classmates.length} 人拍立得 A4 超清无水印排版源`;
+            // 移除了不存在的 DOM 元素 mock-order-id 和 mock-order-count 的引用，防止报错
             document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function verifyActivationKey() {
+            const key = document.getElementById('activation-key-input').value.trim();
+            if (key === "2026") { // 可以根据需求修改密码
+                confirmH5MockPayment();
+            } else {
+                showH5Notification("❌ 密码错误，请联系班长获取正确的激活密码！");
+            }
         }
 
         function closePayModal() {
