@@ -347,52 +347,52 @@
     </div>
 
     <!-- 其余弹窗模块保持原样 -->
-<div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md p-4">
-    <div class="bg-slate-950 border border-white/10 w-full max-w-[420px] rounded-t-[36px] sm:rounded-[36px] p-6 space-y-6 animate-slide-up text-left relative overflow-hidden">
-        <!-- 装饰性光晕 -->
-        <div class="absolute -top-20 -right-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl"></div>
-        
-        <div class="flex justify-between items-center border-b border-white/5 pb-4 relative z-10">
-            <span class="text-xs font-black text-white flex items-center gap-2">
-                <i class="fa-solid fa-gift text-teal-400"></i> 青春记忆保存舱
-            </span>
-            <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-200 text-sm bg-white/5 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="text-center space-y-4 py-2 relative z-10">
-            <div class="space-y-1">
-                <h3 class="text-2xl font-black text-white tracking-tight">￥8.80</h3>
-                <p class="text-[10px] text-teal-400 font-bold uppercase tracking-widest">愿 2026 届顶峰相见 · 诸事顺遂</p>
-            </div>
-            <p class="text-[11px] text-slate-300 leading-relaxed px-4">
-                这一份 8.8 元的留念，是送给全班青春的一份敬酒。解锁后，你将获得一份精美排版、可直接送去印厂冲印的 300DPI 超清实体纪念册 PDF 源文件。
-            </p>
-        </div>
-
-        <!-- 这里放你的个人收款码 -->
-        <div class="text-center py-2 space-y-4 relative z-10">
-            <div class="w-36 h-36 mx-auto bg-white p-2 rounded-2xl shadow-lg border border-teal-500/20">
-                <!-- 💡 替换提示：将下面的 src 替换为你自己的微信个人收款码图片直链 -->
-                <img src="https://你的收款码图片链接.jpg" class="w-full h-full object-contain" alt="请替换你的收款码">
+    <div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md p-4">
+        <div class="bg-slate-950 border border-white/10 w-full max-w-[420px] rounded-t-[36px] sm:rounded-[36px] p-6 space-y-6 animate-slide-up text-left relative overflow-hidden">
+            <!-- 装饰性光晕 -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="flex justify-between items-center border-b border-white/5 pb-4 relative z-10">
+                <span class="text-xs font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-gift text-teal-400"></i> 青春记忆保存舱
+                </span>
+                <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-200 text-sm bg-white/5 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="space-y-1.5 px-4">
-                <label class="block text-[9px] font-extrabold text-slate-500 tracking-wider uppercase">付款后，输入班长预设的激活密码</label>
-                <div class="flex gap-2">
-                    <input type="text" id="activation-key-input" placeholder="输入密码，例如 2026" class="flex-grow bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold text-center">
-                    <button onclick="verifyActivationKey()" class="px-4 bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs rounded-xl transition-all cursor-pointer">
-                        解锁
-                    </button>
+            <div class="text-center space-y-4 py-2 relative z-10">
+                <div class="space-y-1">
+                    <h3 class="text-2xl font-black text-white tracking-tight">￥8.80</h3>
+                    <p class="text-[10px] text-teal-400 font-bold uppercase tracking-widest">愿 2026 届顶峰相见 · 诸事顺遂</p>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed px-4">
+                    这一份 8.8 元的留念，是送给全班青春的一份敬酒。解锁后，你将获得一份精美排版、可直接送去印厂冲印的 300DPI 超清实体纪念册 PDF 源文件。
+                </p>
+            </div>
+    
+            <!-- 这里放你的个人收款码 -->
+            <div class="text-center py-2 space-y-4 relative z-10">
+                <div class="w-36 h-36 mx-auto bg-white p-2 rounded-2xl shadow-lg border border-teal-500/20">
+                    <!-- 💡 替换提示：将下面的 src 替换为你自己的微信个人收款码图片直链 -->
+                    <img src="https://你的收款码图片链接.jpg" class="w-full h-full object-contain" alt="请替换你的收款码">
+                </div>
+                
+                <div class="space-y-1.5 px-4">
+                    <label class="block text-[9px] font-extrabold text-slate-500 tracking-wider uppercase">付款后，输入班长预设的激活密码</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="activation-key-input" placeholder="输入密码，例如 2026" class="flex-grow bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 font-semibold text-center">
+                        <button onclick="verifyActivationKey()" class="px-4 bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs rounded-xl transition-all cursor-pointer">
+                            解锁
+                        </button>
+                    </div>
                 </div>
             </div>
+    
+            <!-- 调试按钮（上线后删掉它） -->
+            <button onclick="confirmH5MockPayment()" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 font-bold text-[10px] py-3 rounded-2xl transition-all cursor-pointer">
+                测试环境：跳过支付直接解锁
+            </button>
         </div>
-
-        <!-- 调试按钮（上线后删掉它） -->
-        <button onclick="confirmH5MockPayment()" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 font-bold text-[10px] py-3 rounded-2xl transition-all cursor-pointer">
-            测试环境：跳过支付直接解锁
-        </button>
     </div>
-</div>
 
     <!-- 朋友圈长图遮罩展示 -->
     <div id="long-image-modal" class="hidden fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black/95 p-4 overflow-y-auto">
